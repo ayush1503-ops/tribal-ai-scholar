@@ -1,0 +1,121 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-primary-900: #073B4C;
+  --color-primary-800: #0A4A5E;
+  --color-primary-700: #0F6B78;
+  --color-primary-600: #0E8A9A;
+  --color-primary-500: #1398AD;
+  --color-primary-100: #E6F6F8;
+  --color-primary-50: #F0FAFB;
+  --color-sand-50: #FDFCFB;
+  --color-sand-100: #F9F6F0;
+  --color-sand-200: #F0EBE0;
+  --color-accent-700: #5B3F91;
+  --color-accent-100: #F0ECF8;
+  --color-success-700: #166534;
+  --color-success-100: #DCFCE7;
+  --color-warning-700: #92400E;
+  --color-warning-100: #FEF3C7;
+  --color-danger-700: #B42318;
+  --color-danger-100: #FEE4E2;
+  --color-info-700: #075985;
+  --color-info-100: #E0F2FE;
+  --color-text: #172B35;
+  --color-text-muted: #52616B;
+  --color-border: #E3E9ED;
+  --color-border-strong: #D7E0E5;
+  --color-surface: #FFFFFF;
+  --color-canvas: #F6F9FA;
+  --color-focus: #155EEF;
+  --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px; --space-5: 24px; --space-6: 32px; --space-7: 48px;
+  --radius-sm: 10px; --radius-md: 14px; --radius-lg: 20px; --radius-xl: 24px; --radius-pill: 999px;
+  --shadow-soft: 0 1px 3px rgba(15,35,45,.06), 0 4px 16px rgba(15,35,45,.06);
+  --shadow-card: 0 2px 8px rgba(15, 35, 45, .07), 0 8px 24px rgba(15,35,45,.06);
+  --shadow-card-hover: 0 4px 16px rgba(15,35,45,.09), 0 16px 32px rgba(15,35,45,.08);
+  --shadow-floating: 0 8px 24px rgba(15,35,45,.12), 0 16px 48px rgba(15,35,45,.10);
+}
+
+* { font-family: 'Inter', system-ui, -apple-system, sans-serif; }
+html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+body {
+  background: linear-gradient(180deg, #FDFCFB 0%, #F6F9FA 40%, #EEF4F6 100%);
+  background-attachment: fixed;
+  color: var(--color-text);
+  font-size: 16px;
+  line-height: 1.6;
+  text-rendering: optimizeLegibility;
+}
+h1, h2, h3 { font-family: 'Inter', sans-serif; letter-spacing: -0.02em; }
+h1 { font-size: 34px; line-height: 1.15; font-weight: 800; }
+h2 { font-size: 22px; font-weight: 700; line-height: 1.3; }
+h3 { font-size: 18px; font-weight: 600; }
+@media(max-width: 768px){ h1{font-size:28px} h2{font-size:20px} }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: #F0F4F6; }
+::-webkit-scrollbar-thumb { background: #C9D6DD; border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: #A8BEC9; }
+
+/* Focus */
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+.text-uppercase { text-transform: none !important; }
+
+/* Table */
+.gov-table th {
+  background: #F8FAFB;
+  font-size: 11px;
+  text-transform: none;
+  letter-spacing: 0.04em;
+  color: #52616B;
+  border-bottom: 2px solid #E3E9ED;
+  font-weight: 600;
+}
+
+/* 44px target */
+button, a.btn, input[type="button"] { min-height: 44px; }
+
+/* Utilities */
+.glass {
+  background: rgba(255,255,255,.82);
+  backdrop-filter: blur(12px) saturate(1.2);
+  -webkit-backdrop-filter: blur(12px) saturate(1.2);
+}
+.card-hover {
+  transition: all .25s cubic-bezier(.16,1,.3,1);
+}
+.card-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-card-hover);
+  border-color: #DDE7EB;
+}
+.shimmer {
+  background: linear-gradient(90deg, #F0F4F6 25%, #E6EEF2 50%, #F0F4F6 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.8s infinite;
+}
+@keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+.fade-in { animation: fadeIn .5s ease-out; }
+@keyframes fadeIn { from{opacity:0; transform:translateY(8px)} to{opacity:1; transform:translateY(0)} }
+.float { animation: float 6s ease-in-out infinite; }
+@keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+
+/* Tribal pattern subtle */
+.tribal-pattern {
+  background-image: radial-gradient(circle at 1px 1px, rgba(7,59,76,.07) 1px, transparent 0);
+  background-size: 22px 22px;
+}
+.tribal-motif {
+  background: 
+    radial-gradient(600px circle at 0% 0%, rgba(14,138,154,.08), transparent 50%),
+    radial-gradient(800px circle at 100% 100%, rgba(7,59,76,.06), transparent 55%),
+    linear-gradient(180deg, #FFFFFF 0%, #F9FCFD 100%);
+}
