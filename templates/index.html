@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#132a45">
+  <title>Certificate Check Desk</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="/" aria-label="Certificate Check Desk home">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 48 48" role="img"><path d="M13 5h17l8 8v28a2 2 0 0 1-2 2H13a3 3 0 0 1-3-3V8a3 3 0 0 1 3-3Z" fill="none" stroke="currentColor" stroke-width="2.5"/><path d="M30 5v9h8M17 22h14M17 28h14M17 34h8" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><circle cx="34" cy="35" r="7" fill="#f6a922" stroke="#fff" stroke-width="2"/><path d="m31 35 2 2 4-5" fill="none" stroke="#132a45" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+        <span>
+          <strong>Certificate Check Desk</strong>
+          <small>SC/ST document screening assistant</small>
+        </span>
+      </a>
+      <span class="privacy-pill"><span class="status-dot"></span> Local processing</span>
+    </div>
+  </header>
+
+  <main class="page-shell">
+    <section class="hero" aria-labelledby="page-title">
+      <div>
+        <p class="eyebrow">CAPTURE · EXTRACT · VERIFY OFFICIALLY</p>
+        <h1 id="page-title">Read a certificate photo clearly.</h1>
+        <p class="hero-copy">Capture or upload a caste certificate. OpenCV cleans the image, OCR extracts its fields, and the app points you to the issuing portal for the final record check.</p>
+      </div>
+      <div class="scope-note" role="note">
+        <span class="scope-icon" aria-hidden="true">i</span>
+        <div><strong>Screening, not a “true/fake” verdict</strong><br>A photo alone cannot prove issuance. Final authenticity must come from the issuing authority, a valid signed QR, or an approved government API.</div>
+      </div>
+    </section>
+
+    <div id="health-banner" class="health-banner is-loading" role="status" aria-live="polite">
+      <span class="health-indicator"></span>
+      <span id="health-text">Checking local OCR…</span>
+    </div>
+
+    <section class="workspace-grid">
+      <article class="panel capture-panel" aria-labelledby="capture-title">
+        <div class="panel-heading">
+          <span class="step-number">1</span>
+          <div>
+            <h2 id="capture-title">Add certificate image</h2>
+            <p>Use a bright, flat, full-page photo.</p>
+          </div>
+        </div>
+
+        <label class="field-label" for="state-select">Issuing State / UT</label>
+        <div class="select-wrap">
+          <select id="state-select">
+            {% for state in states %}
+              <option value="{{ state.code }}"{% if state.code == 'delhi' %} selected{% endif %}>{{ state.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div id="camera-stage" class="camera-stage">
+          <div id="camera-placeholder" class="camera-placeholder">
+            <svg viewBox="0 0 96 96" aria-hidden="true"><rect x="12" y="27" width="72" height="51" rx="8" fill="none" stroke="currentColor" stroke-width="4"/><path d="m31 27 6-10h22l6 10" fill="none" stroke="currentColor" stroke-width="4" stroke-linejoin="round"/><circle cx="48" cy="52" r="14" fill="none" stroke="currentColor" stroke-width="4"/><path d="M70 38h4" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg>
+            <strong>No image selected</strong>
+            <span>Camera photos and image files stay on this server only for processing.</span>
+          </div>
+          <video id="camera" autoplay playsinline muted hidden></video>
+          <img id="preview" alt="Certificate image preview" hidden>
+          <canvas id="capture-canvas" hidden></canvas>
+          <div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div>
+        </div>
+
+        <div class="capture-actions">
+          <button id="start-camera" class="button secondary" type="button">
+            <span aria-hidden="true">◉</span> Open camera
+          </button>
+          <button id="capture-photo" class="button secondary" type="button" hidden>
+            <span aria-hidden="true">●</span> Take photo
+          </button>
+          <label class="button ghost" for="file-input">
+            <span aria-hidden="true">↑</span> Upload image
+          </label>
+          <input id="file-input" type="file" accept="image/jpeg,image/png,image/webp,image/bmp,image/tiff" hidden>
+        </div>
+
+        <div class="photo-tips">
+          <span>✓ All 4 corners visible</span>
+          <span>✓ No flash glare</span>
+          <span>✓ Text in focus</span>
+        </div>
+
+        <button id="analyze-button" class="button primary full-width" type="button" disabled>
+          <span class="button-label">Extract &amp; check document</span>
+          <span class="button-spinner" aria-hidden="true"></span>
+        </button>
+        <p id="capture-error" class="inline-error" role="alert" hidden></p>
+      </article>
+
+      <article id="results-panel" class="panel results-panel empty-state" aria-labelledby="results-title">
+        <div class="panel-heading">
+          <span class="step-number">2</span>
+          <div>
+            <h2 id="results-title">Review extracted details</h2>
+            <p>Confirm OCR against the original image.</p>
+          </div>
+        </div>
+
+        <div id="results-empty" class="results-empty">
+          <div class="scan-illustration" aria-hidden="true">
+            <span></span><span></span><span></span><span></span>
+            <div class="scan-line"></div>
+          </div>
+          <h3>Your report will appear here</h3>
+          <p>Add a clear certificate image, then select “Extract &amp; check document”.</p>
+        </div>
+
+        <div id="results-content" hidden>
+          <section id="verdict-card" class="verdict-card" aria-live="polite">
+            <div class="verdict-icon" id="verdict-icon" aria-hidden="true"></div>
+            <div class="verdict-copy">
+              <p class="verdict-kicker">DOCUMENT SCREENING RESULT</p>
+              <h3 id="verdict-title"></h3>
+              <p id="verdict-summary"></p>
+            </div>
+            <div class="completeness">
+              <strong id="completeness-value">0%</strong>
+              <span>fields found</span>
+            </div>
+          </section>
+
+          <section class="result-section" aria-labelledby="fields-title">
+            <div class="section-title-row">
+              <h3 id="fields-title">Extracted fields</h3>
+              <span class="review-chip">Review each value</span>
+            </div>
+            <div id="fields-list" class="fields-list"></div>
+          </section>
+
+          <section class="result-section" aria-labelledby="checks-title">
+            <h3 id="checks-title">Capture &amp; consistency checks</h3>
+            <div id="checks-list" class="checks-list"></div>
+          </section>
+
+          <section id="qr-section" class="result-section" hidden aria-labelledby="qr-title">
+            <h3 id="qr-title">QR evidence</h3>
+            <div id="qr-list" class="qr-list"></div>
+          </section>
+
+          <section class="official-card">
+            <div class="official-symbol" aria-hidden="true">⌂</div>
+            <div>
+              <p class="verdict-kicker">FINAL REQUIRED STEP</p>
+              <h3>Confirm with the issuing authority</h3>
+              <p id="official-instruction"></p>
+              <a id="official-link" class="button official-button" href="#" target="_blank" rel="noopener noreferrer">Open official portal ↗</a>
+            </div>
+          </section>
+
+          <details class="ocr-details">
+            <summary>View full OCR text and diagnostics</summary>
+            <div class="diagnostic-row" id="diagnostic-row"></div>
+            <pre id="ocr-text"></pre>
+          </details>
+
+          <p id="decision-notice" class="decision-notice"></p>
+          <div class="report-actions">
+            <button id="download-report" class="button ghost" type="button">↓ Download JSON report</button>
+            <button id="clear-button" class="button text-button" type="button">Clear document</button>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <section class="privacy-strip" aria-label="Privacy information">
+      <div><strong>Private by design</strong><span>The app does not save uploaded images or reports.</span></div>
+      <div><strong>No automatic rejection</strong><span>Use a trained human and issuer records for decisions.</span></div>
+      <div><strong>No web lookup of QR</strong><span>Links are shown, never fetched automatically.</span></div>
+    </section>
+  </main>
+
+  <footer>
+    <p>Open-source prototype · OpenCV + Tesseract · Treat caste data as sensitive personal information.</p>
+  </footer>
+
+  <script src="{{ url_for('static', filename='app.js') }}" defer></script>
+</body>
+</html>
