@@ -10,6 +10,14 @@ opencv-python-headless>=4.9,<5
 Pillow>=10,<13
 pytesseract>=0.3.10
 
+# Local ONNX OCR — works without the Tesseract system binary
+rapidocr-onnxruntime>=1.3.24
+
+# PDF scanning + export
+PyMuPDF>=1.23.0
+img2pdf>=0.5.1
+reportlab>=4.0
+
 # Tribal Scholar backend (FastAPI)
 fastapi>=0.110.0
 uvicorn[standard]>=0.29.0
