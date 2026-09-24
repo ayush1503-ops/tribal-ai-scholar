@@ -80,9 +80,9 @@
             <span aria-hidden="true">●</span> Take photo
           </button>
           <label class="button ghost" for="file-input">
-            <span aria-hidden="true">↑</span> Upload image
+            <span aria-hidden="true">↑</span> Upload image / PDF
           </label>
-          <input id="file-input" type="file" accept="image/jpeg,image/png,image/webp,image/bmp,image/tiff" hidden>
+          <input id="file-input" type="file" accept="image/jpeg,image/png,image/webp,image/bmp,image/tiff,application/pdf" hidden>
         </div>
 
         <div class="photo-tips">
@@ -139,13 +139,23 @@
           </section>
 
           <section class="result-section" aria-labelledby="checks-title">
-            <h3 id="checks-title">Capture &amp; consistency checks</h3>
+            <h3 id="checks-title">Capture, consistency &amp; forensic checks</h3>
             <div id="checks-list" class="checks-list"></div>
           </section>
 
           <section id="qr-section" class="result-section" hidden aria-labelledby="qr-title">
             <h3 id="qr-title">QR evidence</h3>
             <div id="qr-list" class="qr-list"></div>
+          </section>
+
+          <section id="tamper-section" class="result-section" hidden aria-labelledby="tamper-title">
+            <h3 id="tamper-title">Possible tampering signals</h3>
+            <div id="tamper-list" class="checks-list"></div>
+          </section>
+
+          <section id="pages-section" class="result-section" hidden aria-labelledby="pages-title">
+            <h3 id="pages-title">Scanned PDF pages</h3>
+            <div id="pages-list" class="pages-list"></div>
           </section>
 
           <section class="official-card">
@@ -167,6 +177,7 @@
           <p id="decision-notice" class="decision-notice"></p>
           <div class="report-actions">
             <button id="download-report" class="button ghost" type="button">↓ Download JSON report</button>
+            <button id="download-pdf" class="button ghost" type="button" hidden>↓ Download searchable PDF</button>
             <button id="clear-button" class="button text-button" type="button">Clear document</button>
           </div>
         </div>
@@ -174,9 +185,10 @@
     </section>
 
     <section class="privacy-strip" aria-label="Privacy information">
-      <div><strong>Private by design</strong><span>The app does not save uploaded images or reports.</span></div>
+      <div><strong>Private by design</strong><span>The app does not save uploaded files or reports.</span></div>
       <div><strong>No automatic rejection</strong><span>Use a trained human and issuer records for decisions.</span></div>
       <div><strong>No web lookup of QR</strong><span>Links are shown, never fetched automatically.</span></div>
+      <div><strong>Scans PDFs too</strong><span>Multi-page PDFs are rendered and each page is scanned locally.</span></div>
     </section>
   </main>
 

@@ -9,7 +9,7 @@ A privacy-first OpenCV web app that:
 5. decodes QR data locally, and
 6. prepares the document for **official issuer-record verification**.
 
-> **Important:** this tool does not declare a caste certificate “true” or “fake” from image appearance. A photograph cannot prove that an authority issued a record. The app returns **Recapture needed**, **Manual review required**, or **Ready for official verification**. A final finding must come from the issuing authority, a verifiable digitally signed QR, or an approved government API.
+> **Important:** this tool does not declare a caste certificate “true” or “fake” from image appearance. A photograph cannot prove that an authority issued a record. The app returns **Recapture needed**, **Not a caste certificate**, **Manual review required**, **Possible tampering — verify**, or **Ready for official verification**. A final finding must come from the issuing authority, a verifiable digitally signed QR, or an approved government API.
 
 It must not be used by itself to approve, reject, rank, or deny anyone in admissions, employment, benefits, or another high-impact process.
 
@@ -22,9 +22,10 @@ sc-st-certificate-verifier/
 ├── certificate_checker/
 │   ├── config.py                  # State portal/domain allowlist
 │   ├── image_pipeline.py          # OpenCV page detection, cleanup, QR
-│   ├── ocr_engine.py              # Local Tesseract adapter
+│   ├── ocr_engine.py              # RapidOCR + Tesseract OCR adapter
+│   ├── pdf_pipeline.py            # PDF page rendering, OCR, PDF export
 │   ├── field_extractor.py         # Label/regex-based field extraction
-│   └── verifier.py                # Quality and consistency screening
+│   └── verifier.py                # Quality, consistency + forensic screening
 ├── templates/index.html           # Camera/upload interface
 ├── static/styles.css
 ├── static/app.js
@@ -35,7 +36,16 @@ sc-st-certificate-verifier/
 └── run.bat
 ```
 
-## 1. Install Tesseract
+## 1. Install OCR
+
+The app works with **RapidOCR (no system binary needed)** or Tesseract. RapidOCR
+is the default in this environment and nothing else is required:
+
+```bash
+pip install rapidocr-onnxruntime
+```
+
+### Optional: Tesseract (multi-language)
 
 Tesseract is a local executable; installing the Python package alone is not enough.
 
@@ -70,13 +80,24 @@ Python 3.10 or newer is recommended.
 cd sc-st-certificate-verifier
 python3 -m venv .venv
 source .venv/bin/activate              # Windows: .venv\Scripts\activate
-pip install -r requirements-full.txt
+pip install -r requirements-full.txt   # includes RapidOCR, PyMuPDF, OpenCV, img2pdf
 python app.py
 ```
 
 Open <http://localhost:8000>. Browser camera access works on `localhost` or an HTTPS origin. If camera permission is unavailable, use **Upload image**.
 
-The health banner at the top says whether local OCR is ready.
+The health banner at the top says whether local OCR and PDF scanning are ready.
+
+### Scanned PDFs
+
+Uploading a `.pdf` scans it page by page (up to 20 pages): each page is rendered
+with PyMuPDF, straightened with OpenCV, OCR'd locally, and screened. The report
+shows a per-page verdict, and the **Download searchable PDF** button exports the
+cleaned pages back into a single PDF. The CLI supports this too:
+
+```bash
+python cli.py path/to/certificate.pdf --state delhi --output report.json --export-pdf cleaned.pdf
+```
 
 ### Command line
 
@@ -105,8 +126,14 @@ Then upload `sample_data/synthetic_demo_certificate.png`. Never add a real perso
 | Issue-date parsing | Obvious future-date inconsistency | Whether the date was issued by government |
 | QR decode | The payload printed in the image | Trustworthiness of an unverified payload |
 | Configured government-domain QR | The link uses an allowlisted issuer host | That the linked record matches until opened and compared |
+| Compression / ELA | Localized re-compression hotspots that may indicate an edited or pasted region | Proof of tampering |
+| Noise consistency | Regions that carry very different sensor noise | Proof of tampering |
+| Software metadata | The image was saved through an editor (e.g. Photoshop) | Proof of a fake |
 
-The app does **not** use error-level analysis, font comparison, stamps, signatures, emblems, or image metadata as proof. Those visual signals are easy to copy and can create dangerous false confidence.
+Forensic signals are **advisory only** and route the file to “Possible tampering —
+verify”, never to an automatic fraud verdict. Scanners, photocopies, and
+legitimate retouching can trigger them, and they can easily be avoided — so a
+clean forensic result is equally **not** proof of authenticity.
 
 ## Official verification workflow
 
@@ -143,10 +170,10 @@ For a production-grade binary result, implement an adapter to an **authorized is
 
 ## Privacy and security
 
-- Uploaded images are read into memory and are not written to disk.
+- Uploaded images and PDFs are read into memory and are not written to disk.
 - Responses use `Cache-Control: no-store`.
 - QR destinations are decoded but never fetched by the server.
-- The upload is capped at 12 MB and decoded images at 25 megapixels.
+- The upload is capped at 25 MB and decoded images at 25 megapixels. PDF pages are capped at 20.
 - No face recognition or identity matching is performed.
 - Reports contain sensitive caste and identity data. Download only when necessary, encrypt at rest, restrict access, set a deletion period, and avoid sharing over chat/email.
 - Put authentication, authorization, TLS, audit logging, rate limiting, malware scanning, and an approved retention policy in front of the app before organizational deployment.
@@ -164,5 +191,7 @@ The unit tests contain only fictional data and do not require Tesseract.
 - Certificate wording and layouts differ by State/UT, district, language, and issue year.
 - Handwriting, embossed seals, faded photocopies, and highly stylized type may OCR poorly.
 - Hindi extraction requires `tesseract-ocr-hin`; other local languages need their respective trained data plus extraction rules.
+- RapidOCR reads English/Hindi mixed documents by default output, but a document's language is not auto-detected as thoroughly as a dedicated multilingual model.
+- Forensic checks (ELA, noise, metadata) are advisory and can be bypassed; they must never be treated as an authenticity decision.
 - OpenCV's QR decoder does not cryptographically validate a signed payload.
 - The default project has only a Delhi portal preset. Select “Auto-detect / other state” for other issuers until a verified configuration is added.

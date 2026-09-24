@@ -2,7 +2,7 @@
 # Vercel limits each Python function to 250 MB unzipped, so heavy optional
 # packages (opencv, numpy, scipy, scikit-learn) are NOT installed here.
 # The app degrades gracefully without them (heuristic ML fallbacks; OCR is
-# unavailable on Vercel anyway because the tesseract binary is missing).
+# unavailable on Vercel anyway without a system binary).
 # For full local functionality use:  pip install -r requirements-full.txt
 
 # Certificate checker (Flask)
