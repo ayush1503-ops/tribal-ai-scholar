@@ -88,7 +88,25 @@ def analyze():
 
     try:
         prepared = prepare_image(image_bytes)
+    except InvalidImage as exc:
+        return jsonify({"error": str(exc)}), 400
+    except Exception as exc:
+        app.logger.exception("Image preparation failed")
+        return jsonify({"error": "Image processing failed. Try a clearer JPG or PNG image."}), 500
+
+    try:
         ocr = read_text(prepared.ocr_variants)
+    except OCRUnavailable as exc:
+        return jsonify({
+            "error": "OCR engine not available on this platform.",
+            "code": "ocr_unavailable",
+            "help": "This deployment lacks Tesseract OCR. Deploy to Railway/Render/Fly.io for full functionality, or integrate a cloud OCR API.",
+        }), 503
+    except Exception as exc:
+        app.logger.exception("OCR failed")
+        return jsonify({"error": "Text extraction failed. Try a clearer image."}), 500
+
+    try:
         fields = extract_fields(ocr.text)
         quality = prepared.quality.to_dict()
         verification = screen_certificate(
@@ -100,16 +118,8 @@ def analyze():
             qr_values=prepared.qr_values,
             state_code=state_code,
         )
-    except InvalidImage as exc:
-        return jsonify({"error": str(exc)}), 400
-    except OCRUnavailable as exc:
-        return jsonify({
-            "error": str(exc),
-            "code": "ocr_unavailable",
-            "help": "Install Tesseract and its English language data, then restart the app.",
-        }), 503
-    except Exception:
-        app.logger.exception("Certificate analysis failed")
+    except Exception as exc:
+        app.logger.exception("Certificate verification failed")
         return jsonify({"error": "Analysis failed. Try a clearer JPG or PNG image."}), 500
 
     return jsonify({
