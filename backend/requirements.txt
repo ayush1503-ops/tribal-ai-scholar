@@ -1,0 +1,11 @@
+fastapi
+uvicorn[standard]
+python-multipart
+rapidfuzz
+pillow
+opencv-python-headless
+pytesseract
+psycopg2-binary
+sqlalchemy
+pydantic
+numpy
