@@ -1,4 +1,4 @@
-# Vercel ignore patterns
+# Only ignore development artifacts
 .git
 .gitignore
 __pycache__/
@@ -10,14 +10,9 @@ venv/
 *.log
 uploads/
 reports/
-sample_data/
-tools/
-tests/
-run.sh
-run.bat
-cli.py
-README.md
-VERCEL_DEPLOYMENT.md
-static/
-templates/
-certificate_checker/
+.idea/
+.vscode/
+node_modules/
+tribal-scholar/frontend/node_modules/
+*.db
+*.sqlite

@@ -1,18 +1,86 @@
 {
   "version": 2,
-  "builds": [
+  "buildCommand": "cd tribal-scholar/frontend && npm install && npm run build",
+  "outputDirectory": "tribal-scholar/frontend/dist",
+  "installCommand": "pip install -r requirements.txt && cd tribal-scholar/frontend && npm install",
+  "functions": {
+    "api/index.py": {
+      "maxDuration": 30,
+      "memory": 1024,
+      "includeFiles": "templates/**, static/**, certificate_checker/**"
+    },
+    "api/tribal.py": {
+      "maxDuration": 30,
+      "memory": 1024,
+      "includeFiles": "tribal-scholar/backend/**, uploads/**"
+    }
+  },
+  "rewrites": [
     {
-      "src": "api/index.py",
-      "use": "@vercel/python",
-      "config": {
-        "maxDuration": 30
-      }
+      "source": "/api/v1/:path*",
+      "destination": "/api/tribal.py"
+    },
+    {
+      "source": "/api/docs",
+      "destination": "/api/tribal.py"
+    },
+    {
+      "source": "/api/redoc",
+      "destination": "/api/tribal.py"
+    },
+    {
+      "source": "/api/openapi.json",
+      "destination": "/api/tribal.py"
+    },
+    {
+      "source": "/health",
+      "destination": "/api/tribal.py"
+    },
+    {
+      "source": "/api/health",
+      "destination": "/api/index.py"
+    },
+    {
+      "source": "/api/analyze",
+      "destination": "/api/index.py"
+    },
+    {
+      "source": "/api/cert/:path*",
+      "destination": "/api/index.py"
+    },
+    {
+      "source": "/static/:path*",
+      "destination": "/api/index.py"
+    },
+    {
+      "source": "/cert",
+      "destination": "/api/index.py"
+    },
+    {
+      "source": "/certificate",
+      "destination": "/api/index.py"
+    },
+    {
+      "source": "/verify",
+      "destination": "/api/index.py"
+    },
+    {
+      "source": "/docs",
+      "destination": "/api/tribal.py"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
   ],
-  "routes": [
+  "headers": [
     {
-      "src": "/(.*)",
-      "dest": "api/index.py"
+      "source": "/api/(.*)",
+      "headers": [
+        { "key": "Access-Control-Allow-Origin", "value": "*" },
+        { "key": "Access-Control-Allow-Methods", "value": "GET, POST, PUT, DELETE, OPTIONS" },
+        { "key": "Access-Control-Allow-Headers", "value": "Content-Type, Authorization" }
+      ]
     }
   ]
 }

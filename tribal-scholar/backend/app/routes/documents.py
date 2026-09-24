@@ -13,8 +13,23 @@ from ..services.photo_scan_service import get_photo_scan_service
 
 router = APIRouter(prefix="/api/v1", tags=["documents"])
 
-UPLOAD_DIR = "./uploads"
-os.makedirs(UPLOAD_DIR, exist_ok=True)
+# Use config for upload dir, fallback to /tmp on Vercel
+try:
+    from ..core.config import settings
+    UPLOAD_DIR = settings.UPLOAD_DIR
+except:
+    UPLOAD_DIR = "/tmp/uploads" if os.getenv("VERCEL") else "./uploads"
+
+try:
+    os.makedirs(UPLOAD_DIR, exist_ok=True)
+except Exception:
+    pass
+# Also ensure legacy path exists for compatibility
+try:
+    os.makedirs("./uploads", exist_ok=True)
+    os.makedirs("/tmp/uploads", exist_ok=True)
+except:
+    pass
 
 ALLOWED_EXTS = {"pdf","jpg","jpeg","png"}
 ALLOWED_MIME = {"application/pdf","image/jpeg","image/jpg","image/png"}

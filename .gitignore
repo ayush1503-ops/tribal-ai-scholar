@@ -7,3 +7,12 @@ venv/
 *.log
 uploads/
 reports/
+*.db
+*.sqlite
+tribal-scholar/frontend/node_modules/
+tribal-scholar/frontend/dist/
+tribal-scholar/backend/tribal_scholar.db
+tribal_scholar.db
+/tmp/
+.idea/
+.vscode/

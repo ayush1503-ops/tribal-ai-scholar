@@ -1,5 +1,30 @@
+# Unified requirements for Vercel deployment
+# Certificate checker (Flask)
 Flask>=3.0,<4
+Werkzeug>=3.0
+
+# Core imaging
 numpy>=1.26,<3
 opencv-python-headless>=4.9,<5
 Pillow>=10,<13
-pytesseract>=0.3.13,<0.4
+pytesseract>=0.3.10
+
+# Tribal Scholar backend (FastAPI)
+fastapi>=0.110.0
+uvicorn[standard]>=0.29.0
+sqlalchemy>=2.0.27
+pydantic>=2.6.1
+pydantic-settings>=2.1.0
+python-jose[cryptography]>=3.3.0
+passlib[bcrypt]>=1.7.4
+bcrypt>=4.0.1
+python-multipart>=0.0.9
+rapidfuzz>=3.6.1
+email-validator>=2.1.0
+python-dateutil>=2.8.2
+# ML - optional but included for full functionality
+scikit-learn>=1.6.1
+scipy>=1.15.2
+
+# Vercel ASGI adapter
+mangum>=0.17.0
