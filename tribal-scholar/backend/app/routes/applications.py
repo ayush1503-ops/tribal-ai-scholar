@@ -13,8 +13,18 @@ import os, hashlib, json
 
 router = APIRouter(prefix="/api/v1/applications", tags=["applications"])
 
-UPLOAD_DIR = "./uploads"
-os.makedirs(UPLOAD_DIR, exist_ok=True)
+try:
+    from ..core.config import settings
+    UPLOAD_DIR = settings.UPLOAD_DIR
+except:
+    UPLOAD_DIR = "/tmp/uploads" if os.getenv("VERCEL") else "./uploads"
+
+try:
+    os.makedirs(UPLOAD_DIR, exist_ok=True)
+    os.makedirs("./uploads", exist_ok=True)
+    os.makedirs("/tmp/uploads", exist_ok=True)
+except:
+    pass
 
 def get_user_roles(db: Session, user_id: str):
     from ..models.models import UserRoleAssignment, Role
