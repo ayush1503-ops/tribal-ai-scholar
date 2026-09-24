@@ -68,12 +68,6 @@ except ImportError as e:
 # Vercel expects `app` variable for Python runtime
 app = fastapi_app
 
-# For Mangum adapter (if Vercel uses AWS Lambda style)
-try:
-    from mangum import Mangum
-    handler = Mangum(app, lifespan="off")
-except ImportError:
-    handler = None
-
-# For direct Vercel Python runtime, `app` is enough
-# Vercel will handle ASGI
+# NOTE: Do NOT define a module-level `handler` variable here. Vercel's Python
+# runtime looks for `handler` before `app` and requires it to be a
+# BaseHTTPRequestHandler subclass - a Mangum handler breaks the function.

@@ -34,7 +34,7 @@ Key rewrites:
 
 ## Requirements
 
-Root `requirements.txt` is unified for both apps:
+Root `requirements.txt` is the SLIM set used by Vercel (kept under the 250 MB function limit). Use `requirements-full.txt` locally for OpenCV + scikit-learn:
 - Flask, FastAPI, SQLAlchemy, Pydantic, etc.
 - opencv-python-headless, Pillow, pytesseract
 - scikit-learn, scipy (optional, with fallback)
@@ -96,7 +96,7 @@ npm run dev  # http://localhost:5173, proxies /api to localhost:8000
 Backend local:
 ```bash
 cd tribal-scholar/backend
-pip install -r requirements.txt
+pip install -r requirements-full.txt
 uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 ```
 
@@ -108,7 +108,7 @@ uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 4. Root Directory: `./` (repo root)
 5. Build Command: (from vercel.json) `cd tribal-scholar/frontend && npm install && npm run build`
 6. Output Directory: `tribal-scholar/frontend/dist`
-7. Install Command: `pip install -r requirements.txt && cd tribal-scholar/frontend && npm install`
+7. Install Command: `cd tribal-scholar/frontend && npm install` (Vercel installs the slim root `requirements.txt` for Python functions automatically)
 8. Add env vars (see above)
 9. Deploy
 
@@ -168,7 +168,7 @@ For full OCR support:
 
 ## What Was Fixed for Vercel
 
-- Unified `requirements.txt` with all deps
+- Slim `requirements.txt` for Vercel, `requirements-full.txt` for local
 - Fixed `.vercelignore` (was ignoring needed files)
 - Created `api/tribal.py` wrapper for FastAPI on Vercel
 - Made `api/index.py` resilient to missing Tesseract/OpenCV

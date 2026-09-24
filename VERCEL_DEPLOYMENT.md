@@ -27,7 +27,7 @@ Use Vercel's Docker support with a custom Dockerfile that installs Tesseract.
 ## Local Development
 
 ```bash
-pip install -r requirements.txt
+pip install -r requirements-full.txt
 # Install Tesseract: https://github.com/tesseract-ocr/tesseract
 python app.py
 ```
