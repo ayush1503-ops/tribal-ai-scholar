@@ -1,8 +1,9 @@
 {
   "version": 2,
-  "buildCommand": "cd tribal-scholar/frontend && npm install && npm run build",
+  "framework": null,
+  "installCommand": "cd tribal-scholar/frontend && npm install",
+  "buildCommand": "cd tribal-scholar/frontend && npm run build",
   "outputDirectory": "tribal-scholar/frontend/dist",
-  "installCommand": "pip install -r requirements.txt && cd tribal-scholar/frontend && npm install",
   "functions": {
     "api/index.py": {
       "maxDuration": 30,
@@ -12,7 +13,7 @@
     "api/tribal.py": {
       "maxDuration": 30,
       "memory": 1024,
-      "includeFiles": "tribal-scholar/backend/**, uploads/**"
+      "includeFiles": "tribal-scholar/backend/**"
     }
   },
   "rewrites": [
@@ -77,9 +78,18 @@
     {
       "source": "/api/(.*)",
       "headers": [
-        { "key": "Access-Control-Allow-Origin", "value": "*" },
-        { "key": "Access-Control-Allow-Methods", "value": "GET, POST, PUT, DELETE, OPTIONS" },
-        { "key": "Access-Control-Allow-Headers", "value": "Content-Type, Authorization" }
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        },
+        {
+          "key": "Access-Control-Allow-Methods",
+          "value": "GET, POST, PUT, DELETE, OPTIONS"
+        },
+        {
+          "key": "Access-Control-Allow-Headers",
+          "value": "Content-Type, Authorization"
+        }
       ]
     }
   ]

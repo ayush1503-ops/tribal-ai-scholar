@@ -59,7 +59,7 @@ This repository contains **two fully functional applications** unified for Verce
 
 ### Certificate Checker:
 ```bash
-pip install -r requirements.txt
+pip install -r requirements-full.txt
 # Install Tesseract: https://github.com/tesseract-ocr/tesseract
 # Ubuntu: sudo apt install tesseract-ocr tesseract-ocr-eng tesseract-ocr-hin
 python app.py  # http://localhost:8000
@@ -69,7 +69,7 @@ python app.py  # http://localhost:8000
 ```bash
 # Backend
 cd tribal-scholar/backend
-pip install -r requirements.txt
+pip install -r requirements-full.txt
 uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload  # http://localhost:8000/docs
 
 # Frontend
@@ -104,13 +104,14 @@ npm run dev  # http://localhost:5173
 │       │   └── services/api.ts
 │       └── dist/ (built)
 ├── vercel.json           # Vercel config (builds, functions, rewrites)
-├── requirements.txt      # Unified Python deps
+├── requirements.txt      # Slim Python deps for Vercel (<250 MB)
+├── requirements-full.txt # Full deps for local/Docker (OpenCV + ML)
 └── VERCEL_DEPLOY.md      # Detailed deploy guide
 ```
 
 ## ✅ What Was Fixed for Vercel
 
-- Unified `requirements.txt` with Flask + FastAPI + ML deps
+- Slim `requirements.txt` for Vercel; `requirements-full.txt` adds OpenCV + ML for local use
 - Fixed `.vercelignore` (was ignoring needed files)
 - Created `api/tribal.py` wrapper with Mangum for FastAPI on Vercel
 - Made `api/index.py` resilient to missing Tesseract
@@ -156,7 +157,7 @@ npm run dev  # http://localhost:5173
 ## 🧪 Tests
 
 ```bash
-pip install -r requirements.txt
+pip install -r requirements-full.txt
 python -m unittest discover -s tests -v  # Certificate checker
 cd tribal-scholar/backend && pytest  # Tribal Scholar (if pytest installed)
 ```

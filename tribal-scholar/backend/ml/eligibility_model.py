@@ -2,11 +2,11 @@
 Eligibility predictor - synthetic ML advisory (not deterministic engine)
 Deterministic engine remains source of truth; this model gives Potential Match score.
 """
-import numpy as np
 import os, pickle, random
 from typing import Dict, Any, List
 
 try:
+    import numpy as np
     from sklearn.linear_model import LogisticRegression
     from sklearn.preprocessing import StandardScaler
     SK_AVAILABLE = True
@@ -85,8 +85,8 @@ class EligibilityModel:
         marks = float(features.get("marks",70) or 70)
         marks_norm = marks/100 if marks>1 else marks
         is_ST = 1 if str(features.get("category","")).upper()=="ST" else 0
-        vec = np.array([[income_ratio, category_match, course_match, age_ok, marks_norm, is_ST]])
         if self.trained and SK_AVAILABLE:
+            vec = np.array([[income_ratio, category_match, course_match, age_ok, marks_norm, is_ST]])
             xs=self.scaler.transform(vec)
             prob = float(self.model.predict_proba(xs)[0][1])
             pred = int(prob>0.5)

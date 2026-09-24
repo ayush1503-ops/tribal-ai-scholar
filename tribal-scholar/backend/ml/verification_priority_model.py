@@ -3,10 +3,11 @@ Verification priority regressor - predicts 0-100 priority (advisory, not fraud s
 Features: quality_flag_count, quality_penalty, duplicate_score, mismatch_score, low_confidence_fields, doc_count_missing, days_to_deadline, resubmission_count
 Never outputs fraud confirmed - only low/medium/high with reasons.
 """
-import os, pickle, random, numpy as np
+import os, pickle, random
 from typing import Dict, Any, List
 
 try:
+    import numpy as np
     from sklearn.ensemble import RandomForestRegressor
     from sklearn.preprocessing import StandardScaler
     SK=True
@@ -79,8 +80,8 @@ class VerificationPriorityModel:
         missing=int(features.get("missing_docs",0))
         deadline=float(features.get("deadline_pressure",0.2))
         resub=int(features.get("resubmissions",0))
-        vec=np.array([[qc, qp, dup, mismatch, lowconf, missing, deadline, resub]])
         if self.model and SK:
+            vec=np.array([[qc, qp, dup, mismatch, lowconf, missing, deadline, resub]])
             xs=self.scaler.transform(vec)
             score=float(self.model.predict(xs)[0])
         else:
