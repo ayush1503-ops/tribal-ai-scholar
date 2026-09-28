@@ -1,0 +1,5 @@
+node_modules
+.git
+uploads/*.pdf
+*.log
+.DS_Store

@@ -766,7 +766,7 @@ app.get('/api/v1/applications/:id/documents', (req, res) => {
   res.json({ items: appDocs })
 })
 
-app.post('/api/v1/applications/:id/documents', upload.single('file'), (req, res) => {
+app.post('/api/v1/applications/:id/documents', upload.single('file') as any, (req, res) => {
   const file = req.file
   const docKey = req.body.document_key || 'st_certificate'
   const newDoc = {
@@ -824,7 +824,7 @@ app.post('/api/v1/documents/:id/correct', (req, res) => {
   res.json({ message: 'Extracted fields updated', document: doc })
 })
 
-app.post('/api/v1/documents/scan', upload.single('file'), (req, res) => {
+app.post('/api/v1/documents/scan', upload.single('file') as any, (req, res) => {
   res.json({
     document_key: req.body.document_key || 'st_certificate',
     quality: { score: 92, level: 'Good', is_blurry: false, is_cropped: false },
@@ -1201,7 +1201,7 @@ app.get('/api/v1/chatbot/suggested', (req, res) => {
 // -------------------------------------------------------------
 // ML Services Routes (/api/v1/ml)
 // -------------------------------------------------------------
-app.post('/api/v1/ml/photo-scan', upload.single('file'), (req, res) => {
+app.post('/api/v1/ml/photo-scan', upload.single('file') as any, (req, res) => {
   const filename = (req.file?.originalname || '').toLowerCase()
   const docHint = req.body.doc_type_hint || 'st_certificate'
 
