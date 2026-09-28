@@ -1,0 +1,5 @@
+{
+  "name": "TribalScholar AI",
+  "description": "AI-assisted, configurable scholarship management platform for ST applicants featuring automated eligibility verification, document screening, and human-in-the-loop decision workflows.",
+  "capabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
